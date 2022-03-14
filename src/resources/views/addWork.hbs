@@ -1,0 +1,25 @@
+<div class="card form-add-work">
+    <div class="card-header">
+        Thêm công việc
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/todos/add">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Tên công việc</label>
+                <input type="text" class="form-control" name="name">
+                <small id="emailHelp" class="form-text text-muted">Bạn phải điền vào ô này</small>
+            </div>
+            <div class="form-group row">
+                <label for="exampleInputPassword1" class="col-2">Thời gian</label>
+                <input type="number" value="08" max="24" class="form-control col-2" name="hours">
+                <span style="line-height: 38px;"> : </span>
+                <input type="number" value="00" max="59" class="form-control col-2" name="minutes">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Mô tả chi tiết</label>
+                <textarea name="desc" id="" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm</button>
+        </form>
+    </div>
+</div>

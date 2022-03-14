@@ -1,0 +1,134 @@
+<div class="card card-trash">
+    <div class="card-header">
+        Danh sách công việc đã xóa
+    </div>
+    <form action="/trash/todos/handle-action-form" method="POST">
+        <div class="card-body">
+            <div class="container row form-action-check">
+                <div class="form-check col-3">
+                    <input type="checkbox" class="form-check-input" id="select-all-input">
+                    <label class="form-check-label" for="select-all-input">Chọn tất cả</label>
+                </div>
+                <div class="form-group col-6 form-action-check__select">
+                    <select class="form-control" id="exampleFormControlSelect1" name="action" required>
+                        <option value="">-- Chọn hành động --</option>
+                        <option value="delete">Xóa</option>
+                        <option value="restore">Phục hồi</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary col-3" id="btnAction" disabled>Thực hiện</button>
+            </div>
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th class="col-1"></th>
+                        <th scope="col" class="col-1">#</th>
+                        <th scope="col" class="col-4">
+                            Tên công việc
+                            {{{ sortable 'name' _sort}}}
+                        </th>
+                        <th scope="col" class="col-4">
+                            Xóa vào lúc
+                            {{{ sortable 'deletedAt' _sort}}}
+                        </th>
+                        <th class="col-1"></th>
+                        <th class="col-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each todos}}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="workIds[]" value="{{this._id}}">
+                        </td>
+                        <th scope="row">{{@index}}</th>
+                        <td>{{this.name}}</td>
+                        <td>{{this.deletedAt}}</td>
+                        <td>
+                            <a href="#" name="icon-delete" class="button-app button-app__danger" data-toggle="modal"
+                                data-target="#exampleModal" data-id={{this._id}}>
+                                <span class="oi oi-trash"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="" name="icon-restore" data-id={{this._id}} class="button-app button-app__success">
+                                <span class="oi oi-reload"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xóa công việc</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Hành động này của bạn sẽ không khôi phục lại được dữ liệu, bạn vẫn muốn xóa?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirm-delete">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="" method="POST" name="formRestore"></form>
+    <form action="" method="POST" name="formDelete"></form>
+</div>
+
+<script>
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var iconRestore = $('a[name="icon-restore"]');
+        var formRestore = document.forms.formRestore;
+        var formDelete = document.forms.formDelete;
+        var btnCfDelete = $('#btn-confirm-delete');
+        var iconDelete = $('a[name="icon-delete"]');
+        var checkAll = $('#select-all-input');
+        var workIdsCheck = $('input[name="workIds[]"]');
+        var btnAction = $('#btnAction');
+
+        // restore work
+        iconRestore.click(function (e) {
+            e.preventDefault();
+            const workId = $(this).data('id');
+            formRestore.action = "/trash/todos/restore/" + workId + "?_method=PATCH";
+            formRestore.submit();
+        })
+
+        //force delete
+        iconDelete.click(function () {
+            const workId = $(this).data('id');
+            formDelete.action = "/trash/todos/force-delete/" + workId + "?_method=DELETE";
+        })
+        btnCfDelete.click(function () {
+            formDelete.submit();
+        })
+
+        // check all select input
+        checkAll.change(function () {
+            const isChecked = $(this).prop('checked');
+            workIdsCheck.prop('checked', isChecked)
+            btnAction.prop('disabled', !isChecked);
+        })
+
+        workIdsCheck.change(function () {
+            const checkedLength = $('input[name="workIds[]"]:checked').length;
+            const isChecked = workIdsCheck.length === checkedLength;
+            checkAll.prop('checked', isChecked);
+            isEnabled = checkedLength > 0 ? false : true;
+            btnAction.prop('disabled', isEnabled);
+        })
+
+    })
+</script>

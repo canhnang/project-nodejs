@@ -1,0 +1,46 @@
+.card-todos {
+  width: 50%;
+  margin: 50px auto; }
+
+.card-trash {
+  width: 70%;
+  margin: 50px auto; }
+
+.form-action-check {
+  display: flex;
+  align-items: center; }
+  .form-action-check__select {
+    margin: 0; }
+
+.card-success,
+.form-add-work {
+  width: 60%;
+  margin: 50px auto; }
+  .card-success textarea,
+  .form-add-work textarea {
+    width: 100%; }
+
+.button-app {
+  border: none;
+  background: none; }
+  .button-app__success {
+    color: green; }
+  .button-app__danger {
+    color: red; }
+
+.card-header-detail {
+  display: flex;
+  justify-content: space-between; }
+
+.main-head {
+  height: 150px;
+  background: #fff; }
+
+.sidenav {
+  height: 100%;
+  background-color: #000;
+  overflow-x: hidden;
+  padding-top: 20px; }
+
+.main {
+  padding: 0px 10px; }

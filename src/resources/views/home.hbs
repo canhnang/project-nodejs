@@ -1,0 +1,156 @@
+<div class="card card-todos">
+    <div class="card-header">
+        <a href="/todos/add-work"><span class="oi oi-plus"></span> Thêm công việc</a>
+    </div>
+    <form action="/todos/handle-action-form" method="POST">
+
+        <div class="card-body">
+            <div class="container row form-action-check">
+                <div class="form-check col-3">
+                    <input type="checkbox" class="form-check-input" id="select-all-input">
+                    <label class="form-check-label" for="select-all-input">Chọn tất cả</label>
+                </div>
+                <div class="form-group col-6 form-action-check__select">
+                    <select class="form-control" id="exampleFormControlSelect1" name="action" required>
+                        <option value="">-- Chọn hành động --</option>
+                        <option value="delete">Xóa</option>
+                        <option value="success">Đánh dấu hoàn thành</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary col-3" id="btnAction" disabled>Thực hiện</button>
+            </div>
+
+            <div class="input-group mb-3 mt-4">
+                <input type="text" class="form-control" name="name-add" placeholder="Thêm nhanh công việc ...">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-primary" type="button" id="btnAdd">Thêm</button>
+                </div>
+            </div>
+
+            <table class="table">
+                <tbody>
+                    {{#if todos}}
+                    {{#each todos }}
+                    <tr>
+                        <td class="col-1">
+                            <button class="button-app button-app__success" data-id="{{this._id}}"><span
+                                    class="oi oi-check"></span></button>
+                        </td>
+                        <td class="col-2">{{this.time}}</td>
+                        <td class="col-6"><a href="/todos/{{this.slug}}">{{ this.name }}</a></td>
+                        <td class="col-1">
+                            <a href="/todos/{{this._id}}/update"><span class="oi oi-wrench"></span></a>
+                        </td>
+                        <td class="col-1">
+                            <button name="icon-delete" class="button-app button-app__danger" data-toggle="modal"
+                                data-target="#exampleModal" data-id={{this._id}}><span
+                                    class="oi oi-trash"></span></button>
+                        </td>
+                        <th class="col-1">
+                            <input type="checkbox" name="checkWorks[]" value="{{this._id}}">
+                        </th>
+                    </tr>
+                    {{/each}}
+                    {{else}}
+                    <td class="text-center">
+                        Không có công việc
+                        <br>
+                        <a href="/todos/add-work">Thêm công việc</a>
+                    </td>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xóa công việc</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Bạn có muốn xóa công việc này?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="btn-confirm-delete">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form action="" method="POST" name="formSuccess"></form>
+<form action="" method="POST" name="formDelete"></form>
+<form action="/todos/add" method="POST" name="formAdd">
+    <input type="text" value="" name="name" id="input-hidden" hidden>
+</form>
+<script>
+
+    window.addEventListener('DOMContentLoaded', (event) => {
+        var btnSuccess = $('.button-app__success');
+        var formSuccess = document.forms.formSuccess;
+        var formDelete = document.forms.formDelete;
+        var formAdd = document.forms.formAdd;
+        var btnCfDelete = $('#btn-confirm-delete');
+        var iconDeletes = $('button[name="icon-delete"]');
+        var selectAllInput = $('#select-all-input');
+        var checkInputs = $('input[name="checkWorks[]"]');
+        var inputTextAdd = $('input[name="name-add"]');
+        var btnAdd = $('#btnAdd');
+        var inputTextHidden = $('#input-hidden');
+        var btnAction = $('#btnAction');
+
+        // success work
+        btnSuccess.click(function () {
+            const todoId = $(this).data('id');
+            formSuccess.action = "/todos/" + todoId + "/check-work?_method=PATCH";
+            formSuccess.submit();
+        })
+
+        // delete work
+        iconDeletes.click(function () {
+            const workId = $(this).data('id');
+            formDelete.action = "/todos/" + workId + "/soft-delete?_method=DELETE";
+        })
+
+        // confirm delete
+        btnCfDelete.click(function () {
+            formDelete.submit();
+        })
+
+        // change select all input
+        selectAllInput.change(function () {
+            const isCheckAll = $(this).prop("checked")
+            checkInputs.prop("checked", isCheckAll)
+            btnAction.prop('disabled', !isCheckAll);
+        })
+
+        // change select input
+        checkInputs.change(function () {
+            const checkedList = $('input[name="checkWorks[]"]:checked').length;
+            const isCheckAll = checkedList === checkInputs.length;
+            selectAllInput.prop('checked', isCheckAll);
+            isEnabled = checkedList > 0 ? false : true;
+            btnAction.prop('disabled', isEnabled);
+        })
+
+        // add work
+        btnAdd.click(function () {
+            const text = inputTextAdd.val();
+            inputTextHidden.val(text);
+            formAdd.submit();
+        })
+
+        // event btn thực hiện
+
+
+
+
+    })
+</script>

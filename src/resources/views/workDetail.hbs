@@ -1,0 +1,28 @@
+<div class="card card-todos">
+    <div class="card-header card-header-detail">
+        Chi tiết công việc
+        <a href="/todos">Quay về danh sách công việc</a>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{todo.name}}</h5>
+        <div class="card-text row">
+            <span class="col-12">
+                {{#if todo.desc }}
+                {{todo.desc}}
+                {{else}}
+                <h6>Không có thông tin bổ sung</h6>
+                {{/if}}
+
+            </span>
+            <span class="col-6">
+                <h6>Thời gian:</h6> {{ todo.time }}
+            </span>
+            <span class="col-6">
+                <h6>Tạo lúc:</h6> {{ todo.createdAt }}
+            </span>
+            <form action="/todos/{{todo._id}}/check-work?_method=PATCH" method="POST" class="col-12 mt-4 text-center">
+                <button type="submit" class="btn btn-success">Đánh dấu đã hoàn thành</button>
+            </form>
+        </div>
+    </div>
+</div>
